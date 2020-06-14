@@ -5,5 +5,7 @@ class Employee():
         self.phone = phone
         self.age = age
 
-
+class EmployeeList():
+    def CreateEmployeeList(self):
+        self.list = []
              

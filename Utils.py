@@ -24,3 +24,14 @@ class EmployeeList():
             self.list.append(employee)
             Added = True
         return Added
+        
+    def delete(self,employeeID):
+        if type(employeeID)!= int or len(employeeID)!=4:
+            raise ValueError('Invalid id, should be 4 digits long')
+        else:
+            a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == employeeID]
+
+            if len(a) == 0:
+                raise ValueError('ID doesn\'t exist')
+            else:
+                del(self.list[a[0][0]])

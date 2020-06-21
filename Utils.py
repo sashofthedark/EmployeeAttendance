@@ -9,24 +9,25 @@ class EmployeeList():
     def CreateEmployeeList(self):
         self.list = []
              
-    def add(self,employee):
+    def add(self,id,name,phone,age):
         Added = False
-        a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == employee.id]
+        a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == id]
         if a!=[]:
             raise ValueError('Employee already in database!')
-        elif type(employee.id) != int or len(employee.id) != 4:
+        elif type(id) != int or len(str(id)) != 4:
             raise ValueError('Invalid id, should be 4 digits long')
-        elif type(employee.age) != int or (employee.age >=18 and employee.age <= 67):
+        elif type(age) != int or (age >=18 and age <= 67):
             raise ValueError('Invalid age, should be between 18 and 67')
-        elif type(employee.phone) != int or len(employee.phone) != 10:
+        elif type(phone) != int or len(str(phone)) != 10:
             raise ValueError('Invalid phone number, should be 10 digits long')
         else:
-            self.list.append(employee)
+            self.list.append(Employee(id,name,phone,age))
             Added = True
         return Added
         
     def delete(self,employeeID):
-        if type(employeeID)!= int or len(employeeID)!=4:
+        Deleted = False
+        if type(employeeID)!= int or len(str(employeeID))!=4:
             raise ValueError('Invalid id, should be 4 digits long')
         else:
             a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == employeeID]
@@ -35,3 +36,6 @@ class EmployeeList():
                 raise ValueError('ID doesn\'t exist')
             else:
                 del(self.list[a[0][0]])
+                Deleted = True
+        return Deleted 
+        #we return a binary value telling the user whether the employee was removed from the database

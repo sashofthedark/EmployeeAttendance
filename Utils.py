@@ -11,6 +11,12 @@ class EmployeeList():
              
     def add(self,id,name,phone,age):
         Added = False
+
+        try:
+            self.list
+        except NameError:
+            CreateEmployeeList()
+
         a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == id]
         if a!=[]:
             raise ValueError('Employee already in database!')
@@ -24,6 +30,7 @@ class EmployeeList():
             self.list.append(Employee(id,name,phone,age))
             Added = True
         return Added
+
         
     def delete(self,employeeID):
         Deleted = False
@@ -39,3 +46,4 @@ class EmployeeList():
                 Deleted = True
         return Deleted 
         #we return a binary value telling the user whether the employee was removed from the database
+

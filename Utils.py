@@ -15,7 +15,7 @@ class EmployeeList():
     def check(self,id,name,phone,age):
         #does this function "see" the self.list?
         #checks whether the data for the employee is valid and he's not already in the employee list
-        CreateEmployeeList()
+        self.CreateEmployeeList()
         a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == id]
         if a!=[]:
             raise ValueError('Employee is already in database!')
@@ -32,7 +32,7 @@ class EmployeeList():
 
          
     def add(self,id,name,phone,age):
-        CreateEmployeeList()
+        self.CreateEmployeeList()
         try:
             check(self,id,name,phone,age)
         except NameError as NamErr:
@@ -48,7 +48,7 @@ class EmployeeList():
         import openpyxl
 
         Added  = False
-        CreateEmployeeList()
+        self.CreateEmployeeList()
 
         if filepath[-4:]!='.csv' and filepath[-5:]!='.xlsx':
             raise TypeError('Wrong file type')
@@ -61,7 +61,7 @@ class EmployeeList():
                     row_cnt = 1
                     for row in csv_reader:
                         try:
-                            check(self,row[0],row[1],row[2],row[3])
+                            self.check(row[0],row[1],row[2],row[3])
                         except NameError as NamErr:
                             print('Error message is {}'.format(NamErr) + ' in row ' + str(row_cnt))
                         else:
@@ -75,19 +75,11 @@ class EmployeeList():
                 phone = sheet_obj.cell(row = rows,column = 2)
                 age = sheet_obj.cell(row = rows,column = 3)
                 try:
-                    check(self,idc,name,phone,age)
-
-                
-
-
-
-
-            
-
-
-            
-
-        
+                    self.check(idc,name,phone,age)
+                except Exception:
+                    pass
+                #I will write something here
+       
     def delete(self,employeeID):
         Deleted = False
         if type(employeeID)!= int or len(str(employeeID))!=4:

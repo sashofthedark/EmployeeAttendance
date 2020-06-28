@@ -78,10 +78,10 @@ class EmployeeList():
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
                         except Exception as Exc:
-                            print(f'Error message is {Exc} in row {str(row_cnt)}')
+                            print(f'The following error occurred: {Exc} in row {str(row_cnt)}')
+                            raise ValueError
                         else:
                             self.add(idr,namer,phoner,ager)
-                return True
 
     def addFromXLSX(self,filepath):
         import os
@@ -94,14 +94,18 @@ class EmployeeList():
         else:
             wb_obj = openpyxl.load_workbook(filepath)
             sheet_obj = wb_obj.active 
-            for rows in range(0,sheet_obj.max_row-1):
-                idc = sheet_obj.cell(row = rows,column = 0)
-                name = str(sheet_obj.cell(row = rows,column = 1))
-                phone = sheet_obj.cell(row = rows,column = 2)
-                age = sheet_obj.cell(row = rows,column = 3)
+            for rows in range(1,sheet_obj.max_row+1):
                 try:
-                    self.check(idc,name,phone,age)
-                except Exception:
-                    pass
-                #I will write something here
+                    idc = int(sheet_obj.cell(row = rows,column = 1).value)
+                    namec = str(sheet_obj.cell(row = rows,column = 2).value)
+                    phonec = int(sheet_obj.cell(row = rows,column = 3).value)
+                    agec = int(sheet_obj.cell(row = rows,column = 4).value)
+
+                    self.check(idc,namec,phonec,agec)
+                except Exception as Exc:
+                    print(f'The following exception occurred {Exc} in row {rows}')
+                    raise ValueError
+                else:
+                    self.add(idc,namec,phonec,agec)
+
 

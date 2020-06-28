@@ -9,7 +9,7 @@ class EmployeeList():
     def CreateEmployeeList(self):
         try:
             self.list
-        except NameError:
+        except AttributeError:
             self.list = []
     
     def check(self,id,name,phone,age):
@@ -29,14 +29,13 @@ class EmployeeList():
             raise ValueError('Invalid age')
         else:
             return True
-
-         
+       
     def add(self,id,name,phone,age):
         self.CreateEmployeeList()
         try:
-            check(self,id,name,phone,age)
-        except NameError as NamErr:
-            print('Error message was {}'.format(NamErr))
+            self.check(id,name,phone,age)
+        except ValueError as ValErr:
+            print(f'Error message was {ValErr}')
             return False
         else:
             self.list.append(Employee(id,name,phone,age))

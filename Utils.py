@@ -19,7 +19,7 @@ class EmployeeList():
         a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == id]
         if a!=[]:
             raise ValueError('Employee is already in database!')
-        elif type(id) != int or len(str(id)) != 4:
+        elif type(id)!= int or len(str(id)) != 4:
             raise ValueError('Invalid ID')
         elif type(name)!=str:
             raise ValueError('Invalid name')
@@ -41,17 +41,29 @@ class EmployeeList():
             self.list.append(Employee(id,name,phone,age))
             return True
 
-    def addFromFile(self,filepath):
+    def delete(self,employeeID):
+        Deleted = False
+        if type(employeeID)!= int or len(str(employeeID))!=4:
+            raise ValueError('Invalid id, should be 4 digits long')
+        else:
+            a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == employeeID]
+            if len(a) == 0:
+                raise ValueError('ID doesn\'t exist')
+            else:
+                del(self.list[a[0][0]])
+                Deleted = True
+        return Deleted 
+        #we return a binary value telling the user whether the employee was removed from the database        
+
+    def addFromCSV(self,filepath):
         import csv
         import os
-        import openpyxl
 
-        Added  = False
         self.CreateEmployeeList()
 
-        if filepath[-4:]!='.csv' and filepath[-5:]!='.xlsx':
+        if filepath[-4:]!='.csv':
             raise TypeError('Wrong file type')
-        elif filepath[-4:] == '.csv':
+        else:
             with open(filepath) as csv_file:
                 csv_reader = csv.reader(csv_file,delimiter=',')
                 if os.stat(filepath).st_size == 0:
@@ -60,12 +72,26 @@ class EmployeeList():
                     row_cnt = 1
                     for row in csv_reader:
                         try:
-                            self.check(row[0],row[1],row[2],row[3])
-                        except NameError as NamErr:
-                            print('Error message is {}'.format(NamErr) + ' in row ' + str(row_cnt))
+                            idr = int(row[0])
+                            namer = str(row[1])
+                            phoner = int(row[2])
+                            ager = int(row[3])
+                            self.check(idr,namer,phoner,ager)
+                        except Exception as Exc:
+                            print(f'Error message is {Exc} in row {str(row_cnt)}')
                         else:
-                            add(self,row[0],row[1],row[2],row[3])
-        elif filepath[-5:] == '.xlsx':
+                            self.add(idr,namer,phoner,ager)
+                return True
+
+    def addFromXLSX(self,filepath):
+        import os
+        import openpyxl
+
+        self.CreateEmployeeList()
+
+        if filepath[-5:]!='.xlsx':
+            raise TypeError('Wrong file type')
+        else:
             wb_obj = openpyxl.load_workbook(filepath)
             sheet_obj = wb_obj.active 
             for rows in range(0,sheet_obj.max_row-1):
@@ -78,19 +104,4 @@ class EmployeeList():
                 except Exception:
                     pass
                 #I will write something here
-       
-    def delete(self,employeeID):
-        Deleted = False
-        if type(employeeID)!= int or len(str(employeeID))!=4:
-            raise ValueError('Invalid id, should be 4 digits long')
-        else:
-            a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == employeeID]
-
-            if len(a) == 0:
-                raise ValueError('ID doesn\'t exist')
-            else:
-                del(self.list[a[0][0]])
-                Deleted = True
-        return Deleted 
-        #we return a binary value telling the user whether the employee was removed from the database
 

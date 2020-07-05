@@ -1,0 +1,2 @@
+class NotInDB(ValueError):
+    pass

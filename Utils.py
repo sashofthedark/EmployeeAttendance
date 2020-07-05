@@ -1,3 +1,5 @@
+from Errors import NotInDB
+
 class Employee():
     def __init__(self,id,name,phone,age):
         self.id = id
@@ -18,7 +20,7 @@ class EmployeeList():
         self.CreateEmployeeList()
         a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == id]
         if a!=[]:
-            raise ValueError('Employee is already in database!')
+            raise NotInDB('Employee is already in database!')
         elif type(id)!= int or len(str(id)) != 4:
             raise ValueError('Invalid ID')
         elif type(name)!=str:
@@ -34,6 +36,8 @@ class EmployeeList():
         self.CreateEmployeeList()
         try:
             self.check(id,name,phone,age)
+        except NotInDB as NDB:
+            print(f'Error message was {NDB}')
         except ValueError as ValErr:
             print(f'Error message was {ValErr}')
             return False
@@ -77,6 +81,9 @@ class EmployeeList():
                             phoner = int(row[2])
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
+                        except NotInDB as NDB:
+                            print(f'The following error occured: {NDB} in row {str(row_cnt)}')
+                            raise NotInDB
                         except Exception as Exc:
                             print(f'The following error occurred: {Exc} in row {str(row_cnt)}')
                             raise ValueError
@@ -102,25 +109,28 @@ class EmployeeList():
                     agec = int(sheet_obj.cell(row = rows,column = 4).value)
 
                     self.check(idc,namec,phonec,agec)
+                except NotInDB as NDB:
+                    print(f'The following exception occurred {NDB} in row {rows}')
+                    raise NotInDB
                 except Exception as Exc:
                     print(f'The following exception occurred {Exc} in row {rows}')
                     raise ValueError
                 else:
                     self.add(idc,namec,phonec,agec)
 
-def DelFromCSV(self,filepath):
-    import csv
-    import os
+    def delFromCSV(self,filepath):
+        import csv
+        import os
 
-    self.CreateEmployeeList()
+        self.CreateEmployeeList()
 
-    if filepath[-4:]!='.csv':
-        raise TypeError('Wrong file type')
-    else:
-        with open(filepath) as csv_file:
-            csv_reader = csv.reader(csv_file,delimiter=',')
-            if os.stat(filepath).st_size == 0:
-                print('File is empty, nothing to delete')
+        if filepath[-4:]!='.csv':
+            raise TypeError('Wrong file type')
+        else:
+            with open(filepath) as csv_file:
+                csv_reader = csv.reader(csv_file,delimiter=',')
+                if os.stat(filepath).st_size == 0:
+                    print('File is empty, nothing to delete')
                 else:
                     row_cnt = 1
                     for row in csv_reader:
@@ -130,9 +140,11 @@ def DelFromCSV(self,filepath):
                             phoner = int(row[2])
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
-                        except Exception as Exc:
+                        except NotInDB:
+                            pass
+                        except ValueError as Exc:
                             print(f'The following error occurred: {Exc} in row {str(row_cnt)}')
-                            raise ValueError
+                            raise
                         else:
-                            self.delete(idr,namer,phoner,ager)
+                            self.delete(idr)
 

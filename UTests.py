@@ -1,5 +1,6 @@
 from Utils import Employee
 from Utils import EmployeeList
+from Errors import NotInDB
 
 a = EmployeeList()
 id = 1234
@@ -47,6 +48,8 @@ def tAddfromcsv(filepath):
         a.addFromCSV(filepath)
     except TypeError:
         print('addfromCSV failed, wrong file type')
+    except NotInDB:
+        print(f'addFromCSV failed with NotInDB error')
     except ValueError:
         print(f'addfromCSV failed with ValueError')
     except Exception as Exc:
@@ -59,12 +62,26 @@ def tAddfromxlsx(filepath):
         a.addFromXLSX(filepath)
     except TypeError:
         print('addfromXLSX failed, wrong file type')
+    except NotInDB:
+        print(f'addFromCSV failed with NotInDB error')
     except ValueError:
         print(f'addfromXLSX failed with ValueError')
     except Exception as Exc:
         print(f'addFromXLSX failed with exception {Exc}')
     else:
         print('addfromXLSX succeeded')
+
+def tdelFromCSV(filepath):
+    try:
+        a.delFromCSV(filepath)
+    except TypeError:
+        print('delFromCSV failed, wrong file type')
+    except ValueError:
+        print(f'delFromCSV failed with ValueError')
+    # except Exception as Exc:
+    #     print(f'delFromCSV failed with exception {Exc}')
+    else:
+        print('delFromCSV succeeded')
 
 #running the unit tests
 tCreateEmployeeList()
@@ -73,7 +90,9 @@ if addResult:
     tDelete()
     #there is no point deleting if the add did not succeed
 tAddfromcsv(filepathCSV)
+tdelFromCSV(filepathCSV)
 tAddfromxlsx(filepathXLSX)
 # for i1 in range(len(a.list)):
 #     print(a.list[i1].id)
+
 

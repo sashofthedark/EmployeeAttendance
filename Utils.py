@@ -108,4 +108,31 @@ class EmployeeList():
                 else:
                     self.add(idc,namec,phonec,agec)
 
+def DelFromCSV(self,filepath):
+    import csv
+    import os
+
+    self.CreateEmployeeList()
+
+    if filepath[-4:]!='.csv':
+        raise TypeError('Wrong file type')
+    else:
+        with open(filepath) as csv_file:
+            csv_reader = csv.reader(csv_file,delimiter=',')
+            if os.stat(filepath).st_size == 0:
+                print('File is empty, nothing to delete')
+                else:
+                    row_cnt = 1
+                    for row in csv_reader:
+                        try:
+                            idr = int(row[0])
+                            namer = str(row[1])
+                            phoner = int(row[2])
+                            ager = int(row[3])
+                            self.check(idr,namer,phoner,ager)
+                        except Exception as Exc:
+                            print(f'The following error occurred: {Exc} in row {str(row_cnt)}')
+                            raise ValueError
+                        else:
+                            self.delete(idr,namer,phoner,ager)
 

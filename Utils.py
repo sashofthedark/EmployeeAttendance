@@ -54,7 +54,8 @@ class EmployeeList():
             if len(a) == 0:
                 raise ValueError('ID doesn\'t exist')
             else:
-                del(self.list[a[0][0]])
+                #print(f'ID for deletion {a[0][1].id}')
+                del self.list[a[0][0]]
                 Deleted = True
         return Deleted 
         #we return a binary value telling the user whether the employee was removed from the database        
@@ -73,7 +74,6 @@ class EmployeeList():
                 if os.stat(filepath).st_size == 0:
                     print('File is empty, nothing to import')
                 else:
-                    row_cnt = 1
                     for row in csv_reader:
                         try:
                             idr = int(row[0])
@@ -81,12 +81,10 @@ class EmployeeList():
                             phoner = int(row[2])
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
-                        except NotInDB as NDB:
-                            print(f'The following error occured: {NDB} in row {str(row_cnt)}')
-                            raise NotInDB
+                        except NotInDB:
+                            pass
                         except Exception as Exc:
-                            print(f'The following error occurred: {Exc} in row {str(row_cnt)}')
-                            raise ValueError
+                            raise
                         else:
                             self.add(idr,namer,phoner,ager)
 
@@ -141,10 +139,38 @@ class EmployeeList():
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
                         except NotInDB:
-                            pass
+                            self.delete(idr)
+                            row_cnt+=1
                         except ValueError as Exc:
                             print(f'The following error occurred: {Exc} in row {str(row_cnt)}')
                             raise
-                        else:
-                            self.delete(idr)
+
+    def delFromXLSX(self,filepath):
+        import os
+        import openpyxl
+
+        self.CreateEmployeeList()
+
+        if filepath[-5:]!='.xlsx':
+            raise TypeError('Wrong file type')
+        else:
+            wb_obj = openpyxl.load_workbook(filepath)
+            sheet_obj = wb_obj.active 
+            row_cnt = 1
+            for rows in range(1,sheet_obj.max_row+1):
+                try:
+                    idc = int(sheet_obj.cell(row = rows,column = 1).value)
+                    namec = str(sheet_obj.cell(row = rows,column = 2).value)
+                    phonec = int(sheet_obj.cell(row = rows,column = 3).value)
+                    agec = int(sheet_obj.cell(row = rows,column = 4).value)
+
+                    self.check(idc,namec,phonec,agec)
+                except NotInDB:
+                    self.delete(idc)
+                    row_cnt+=1
+                except Exception as Exc:
+                    print(f'The following exception occurred {Exc} in row {rows}')
+                    raise ValueError
+                    
+
 

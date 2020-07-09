@@ -1,8 +1,10 @@
 from Utils import Employee
 from Utils import EmployeeList
 from Errors import NotInDB
+from Reports import Attendance
 
 a = EmployeeList()
+lst = Attendance()
 id = 1234
 name = 'Alexandra'
 phone = 5846536420
@@ -93,6 +95,14 @@ def tdelFromXLSX(filepath):
     else:
         print('delFromXLSX succeeded')
 
+def tCreateAttList():
+    try:
+        lst.CreateAttList()
+    except Exception as Exc:
+        print(f'Attendance list creation failed with error {Exc}')
+    else:
+        print('Created attendance list - Success')
+
 #running the unit tests
 tCreateEmployeeList()
 addResult = tAdd()
@@ -105,6 +115,7 @@ tAddfromCSV(filepathCSV)
 tdelFromCSV(filepathCSV)
 tAddfromXLSX(filepathXLSX)
 tdelFromXLSX(filepathXLSX)
+tCreateAttList()
 # for i1 in range(len(a.list)):
 #     print(a.list[i1].id)
 

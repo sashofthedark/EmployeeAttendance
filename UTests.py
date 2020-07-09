@@ -1,10 +1,10 @@
 from Utils import Employee
 from Utils import EmployeeList
-from Errors import NotInDB
+from Errors import NotInDB,InDB
 from Reports import Attendance
 
 a = EmployeeList()
-lst = Attendance()
+lst = Attendance(a)
 id = 1234
 name = 'Alexandra'
 phone = 5846536420
@@ -22,7 +22,7 @@ def tCreateEmployeeList():
         print('CreateEmployeeList succeeded')
 
 def tAdd():
-    print('Starting Add unit test')
+    #print('Starting Add unit test')
     b = a.add(id,name,phone,age)
     if b and id == a.list[-1].id:
         print('Add succeeded')
@@ -62,8 +62,8 @@ def tAddfromXLSX(filepath):
         a.addFromXLSX(filepath)
     except TypeError:
         print('addfromXLSX failed, wrong file type')
-    except NotInDB:
-        print(f'addFromCSV failed with NotInDB error')
+    except InDB:
+        print(f'addFromCSV failed with InDB error')
     except ValueError:
         print(f'addfromXLSX failed with ValueError')
     except Exception as Exc:
@@ -103,6 +103,23 @@ def tCreateAttList():
     else:
         print('Created attendance list - Success')
 
+def tWrite(id):
+    try:
+        a.add(id,name,phone,age)
+        a.add(id+1,name,phone,age)
+        lst.Write(id)
+        lst.Write(id+1)
+    except NotInDB:
+        print('Write to Attendance failed - ID not in database')
+    except Exception as Exc:
+        print(f'Write to Attendance failed with Exception: {Exc}')
+    else:
+        print('Write to Attendance - Success')
+    try:
+        lst.Write(9999)
+    except NotInDB:
+        print('Trying to add nonexistent ID failed - Success')
+
 #running the unit tests
 tCreateEmployeeList()
 addResult = tAdd()
@@ -110,12 +127,15 @@ for i1 in range(len(a.list)):
     print(a.list[i1].id)
 if addResult:
     tDelete()
+else:
+    print('Delete failed, because Add failed')
     #there is no point deleting if the add did not succeed
 tAddfromCSV(filepathCSV)
 tdelFromCSV(filepathCSV)
 tAddfromXLSX(filepathXLSX)
 tdelFromXLSX(filepathXLSX)
 tCreateAttList()
+tWrite(id)
 # for i1 in range(len(a.list)):
 #     print(a.list[i1].id)
 

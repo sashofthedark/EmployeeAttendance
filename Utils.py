@@ -1,4 +1,5 @@
-from Errors import NotInDB
+from Errors import NotInDB,InDB
+
 
 class Employee():
     def __init__(self,id,name,phone,age):
@@ -20,7 +21,7 @@ class EmployeeList():
         self.CreateEmployeeList()
         a = [(ind,value) for (ind,value) in enumerate(self.list) if value.id == id]
         if a!=[]:
-            raise NotInDB('Employee is already in database!')
+            raise InDB('Employee is already in database!')
         elif type(id)!= int or len(str(id)) != 4:
             raise ValueError('Invalid ID')
         elif type(name)!=str:
@@ -36,7 +37,7 @@ class EmployeeList():
         self.CreateEmployeeList()
         try:
             self.check(id,name,phone,age)
-        except NotInDB as NDB:
+        except InDB as NDB:
             print(f'Error message was {NDB}')
         except ValueError as ValErr:
             print(f'Error message was {ValErr}')
@@ -81,7 +82,7 @@ class EmployeeList():
                             phoner = int(row[2])
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
-                        except NotInDB:
+                        except InDB:
                             pass
                         except Exception as Exc:
                             raise
@@ -107,9 +108,9 @@ class EmployeeList():
                     agec = int(sheet_obj.cell(row = rows,column = 4).value)
 
                     self.check(idc,namec,phonec,agec)
-                except NotInDB as NDB:
+                except InDB as NDB:
                     print(f'The following exception occurred {NDB} in row {rows}')
-                    raise NotInDB
+                    raise InDB
                 except Exception as Exc:
                     print(f'The following exception occurred {Exc} in row {rows}')
                     raise ValueError
@@ -138,7 +139,7 @@ class EmployeeList():
                             phoner = int(row[2])
                             ager = int(row[3])
                             self.check(idr,namer,phoner,ager)
-                        except NotInDB:
+                        except InDB:
                             self.delete(idr)
                             row_cnt+=1
                         except ValueError as Exc:
@@ -165,7 +166,7 @@ class EmployeeList():
                     agec = int(sheet_obj.cell(row = rows,column = 4).value)
 
                     self.check(idc,namec,phonec,agec)
-                except NotInDB:
+                except InDB:
                     self.delete(idc)
                     row_cnt+=1
                 except Exception as Exc:

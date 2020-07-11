@@ -2,6 +2,7 @@ from Utils import Employee
 from Utils import EmployeeList
 from Errors import NotInDB,InDB
 from Reports import Attendance
+import datetime 
 
 a = EmployeeList()
 lst = Attendance(a)
@@ -120,7 +121,26 @@ def tWrite(id):
     except NotInDB:
         print('Trying to add nonexistent ID failed - Success')
 
+def tRepID():
+    id1 = 1050
+    id2 = 2050
+    a.add(id1,'Natalie',2342342342,20)
+    a.add(id2,'Portman',3453453453,23)
+    lst.CreateAttList()
+    lst.Write(id1)
+    lst.Write(id2)
+    lst.Write(id1)
+    lst.Write(id2)
+    # try:
+    #     lst.RepID(id1,datetime.datetime.now().year,datetime.datetime.now().month)
+    # except Exception as Exc:
+    #     print(f'Finished with an exception {Exc}')
+    lst.RepID(id1,datetime.datetime.now().year,datetime.datetime.now().month)
+    lst.RepIDView(id1,datetime.datetime.now().year,datetime.datetime.now().month)
+    #will be continued
+
 #running the unit tests
+
 tCreateEmployeeList()
 addResult = tAdd()
 for i1 in range(len(a.list)):
@@ -136,6 +156,7 @@ tAddfromXLSX(filepathXLSX)
 tdelFromXLSX(filepathXLSX)
 tCreateAttList()
 tWrite(id)
+tRepID()
 # for i1 in range(len(a.list)):
 #     print(a.list[i1].id)
 

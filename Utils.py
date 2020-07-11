@@ -14,6 +14,15 @@ class EmployeeList():
             self.list
         except AttributeError:
             self.list = []
+
+    def IsInList(self,id,List):
+        #checks whether ID is in list
+        a = [(ind,value) for (ind,value) in enumerate(List) if value.id == id]
+        if a == []:
+            return False
+        else:
+            return True
+        
     
     def check(self,id,name,phone,age):
         #does this function "see" the self.list?

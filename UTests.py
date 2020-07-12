@@ -131,12 +131,13 @@ def tRepID():
     lst.Write(id2)
     lst.Write(id1)
     lst.Write(id2)
-    # try:
-    #     lst.RepID(id1,datetime.datetime.now().year,datetime.datetime.now().month)
-    # except Exception as Exc:
-    #     print(f'Finished with an exception {Exc}')
-    lst.RepID(id1,datetime.datetime.now().year,datetime.datetime.now().month)
-    lst.RepIDView(id1,datetime.datetime.now().year,datetime.datetime.now().month)
+    try:
+        lst.RepID(id1,datetime.datetime.now().year,datetime.datetime.now().month)
+        lst.RepIDView(id1,datetime.datetime.now().year,datetime.datetime.now().month)
+    except Exception as Exc:
+        print(f'Finished with an exception {Exc}')
+    else:
+        print('RepID succeeded')
 
 def tRep():
     try:
@@ -145,6 +146,14 @@ def tRep():
         print(f'Rep finished with exception {Exc}')
     else:
         print(f'Rep succeeded')
+
+def tViewRep():
+    try:
+        lst.RepView(2020,7,False)
+    except Exception as Exc:
+        print(f'ViewRep finished with exception {Exc}')
+    else:
+        print('ViewRep Succeeded')
 
 #running the unit tests
 
@@ -165,7 +174,6 @@ tCreateAttList()
 tWrite(id)
 tRepID()
 tRep()
-# for i1 in range(len(a.list)):
-#     print(a.list[i1].id)
+tViewRep()
 
 

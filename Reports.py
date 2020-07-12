@@ -1,4 +1,5 @@
 from Errors import NotInDB,InDB
+from prettytable import PrettyTable
 import Utils
 import csv 
 import os
@@ -54,7 +55,7 @@ class Attendance():
     def WriteToCSV(self,MatchDict,OnlyLate):
         list_path = self.CreateAttList()
         path = './'
-
+        EmptyFlag = False
         LateHour = 17
         LateMinute = 15
 
@@ -63,7 +64,8 @@ class Attendance():
         if OnlyLate:
             path = path + '_late'
         path = path + '_report.csv'
-        print(path)
+        if os.path.isfile(path):
+            os.remove(path)
         with open(path,'a',newline='') as writepath:
             with open(list_path,'r') as readpath:
                 readfile = csv.DictReader(readpath,delimiter=',')
@@ -79,18 +81,21 @@ class Attendance():
                     writefile.writerow(row)
 
     def ViewReport(self,MatchDict,OnlyLate):
-        from prettytable import PrettyTable
+        LateHour = 19
+        LateMinute = 20
         list_path = self.CreateAttList()
         with open(list_path,'r') as readpath:
             readfile = csv.DictReader(readpath,delimiter=',')
-            headers = MatchDict.keys()
+            headers = readfile.fieldnames
             t = PrettyTable(list(headers))
             t.add_row(list(headers))
             rowsToFilter = readfile
+            
             for (key,value) in MatchDict.items():
-                rowsToFilter = filter(lambda row: (row[str(key)] == str(value)),rowsToFilter)
-                if OnlyLate:
-                    rowsToFilter = filter(lambda row: (int(row['Hour']) > LateHour or (int(row['Hour']) == LateHour and int(row['Minute']) > LateMinute)),rowsToFilter)
+                rowsToFilter = filter(lambda row, key=key, value=value: (str(row[str(key)]) == str(value)), rowsToFilter)
+            if OnlyLate:
+                rowsToFilter = filter(lambda row: (int(row['Hour']) > LateHour or (int(row['Hour']) == LateHour and int(row['Minute']) > LateMinute)),rowsToFilter)
+            
             for row in rowsToFilter:
                 rowsToAdd = []
                 for header in headers:
@@ -99,7 +104,13 @@ class Attendance():
             print(t)
 
     def RepView(self,year,month,OnlyLate):
-        pass
+        print(f'This is an attendance report for year {year} month {month}')
+        if OnlyLate:
+            print('Only late employees')
+        MatchDict = {}
+        MatchDict['Year']=year
+        MatchDict['Month']=month
+        self.ViewReport(MatchDict,OnlyLate)
 
 
     def RepIDView(self,id,year,month):

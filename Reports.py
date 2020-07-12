@@ -78,28 +78,41 @@ class Attendance():
                 for row in rowsToFilter:
                     writefile.writerow(row)
 
+    def ViewReport(self,MatchDict,OnlyLate):
+        from prettytable import PrettyTable
+        list_path = self.CreateAttList()
+        with open(list_path,'r') as readpath:
+            readfile = csv.DictReader(readpath,delimiter=',')
+            headers = MatchDict.keys()
+            t = PrettyTable(list(headers))
+            t.add_row(list(headers))
+            rowsToFilter = readfile
+            for (key,value) in MatchDict.items():
+                rowsToFilter = filter(lambda row: (row[str(key)] == str(value)),rowsToFilter)
+                if OnlyLate:
+                    rowsToFilter = filter(lambda row: (int(row['Hour']) > LateHour or (int(row['Hour']) == LateHour and int(row['Minute']) > LateMinute)),rowsToFilter)
+            for row in rowsToFilter:
+                rowsToAdd = []
+                for header in headers:
+                    rowsToAdd.append(str(row[header]))
+                t.add_row(rowsToAdd)
+            print(t)
 
     def RepView(self,year,month,OnlyLate):
         pass
 
 
     def RepIDView(self,id,year,month):
-        from prettytable import PrettyTable
-        list_path = self.CreateAttList()
         if not a.IsInList(id,self.EList.list):
             print('Employee is not in database!')
             raise NotInDB('Employee not in database')
         else:
-            with open(list_path,'r') as List:
-                readfile = csv.DictReader(List,delimiter=',')
-                headers = readfile.fieldnames
-                t = PrettyTable(list(headers[1:]))
-                print(f'This is an attendance report for ID {id}')
-                t.add_row(headers[1:])
-                for row in readfile:
-                    if row['ID'] == str(id) and row['Year'] == str(year) and row['Month'] == str(month):
-                        t.add_row([row['Year'],row['Month'],row['Day'],row['Hour'],row['Minute']])
-                print(t)
+            print(f'This is an attendance report for ID {id}')
+            MatchDict = {}
+            MatchDict['ID'] = id
+            MatchDict['Year'] = year
+            MatchDict['Month'] = month
+            self.ViewReport(MatchDict,False)
 
 
 

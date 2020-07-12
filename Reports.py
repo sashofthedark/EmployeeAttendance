@@ -34,25 +34,61 @@ class Attendance():
                 writefile.writerow([id,now.year,now.month,now.day,now.hour,now.minute])
         
     def RepID(self,id,year,month):
-        #generates attendance report per ID
-        pathID = './'+str(id)+'_'+str(year)+'_'+str(month)+'_rep.csv'
+        if not a.IsInList(id,self.EList.list):
+            print('Employee is not in database!')
+            raise NotInDB('Employee not in database')
+        else:
+            MatchDict = {}
+            MatchDict['Year']=year
+            MatchDict['Month']=month
+            MatchDict['ID'] = id
+            self.WriteToCSV(MatchDict,False)
+            # with open(pathID,'a',newline='') as IDrep:
+            #     with open(list_path,'r') as List:
+            #         readfile = csv.DictReader(List,delimiter=',')
+            #         headers = readfile.fieldnames
+            #         writefile = csv.DictWriter(IDrep,fieldnames = headers,delimiter=',')
+            #         writefile.writeheader()
+            #         for row in readfile:
+            #             if row['ID'] == str(id) and row['Year'] == str(year) and row['Month'] == str(month):
+            #                 writefile.writerow(row)
+
+    def Rep(self,year,month,OnlyLate):
+        pathID = './'+str(year)+'_'+str(month)+'_report.csv'
+        pathIDlate='./'+str(year)+'_'+str(month)+'_late_report.csv'
         list_path = self.CreateAttList()
         if not a.IsInList(id,self.EList.list):
             print('Employee is not in database!')
             raise NotInDB('Employee not in database')
         else:
-            with open(pathID,'a',newline='') as IDrep:
-                with open(list_path,'r') as List:
-                    readfile = csv.DictReader(List,delimiter=',')
-                    headers = readfile.fieldnames
-                    writefile = csv.DictWriter(IDrep,fieldnames = headers,delimiter=',')
-                    writefile.writeheader()
-                    for row in readfile:
-                        if row['ID'] == str(id) and row['Year'] == str(year) and row['Month'] == str(month):
-                            writefile.writerow(row)
+            pass
+    
+    def WriteToCSV(self,MatchDict,OnlyLate):
+        list_path = self.CreateAttList()
+        path = './'
 
-    def Rep(self,year,month,OnlyLate):
-        pass
+        LateHour = 9
+        LateMinute = 30
+
+        for Headers in MatchDict.keys():
+            path = path + str(Headers)
+        if OnlyLate:
+            path = path + '_late'
+        path = path + '_report.csv'
+        with open(path,'a',newline='') as writepath:
+            with open(list_path,'r') as readpath:
+                readfile = csv.DictReader(readpath,delimiter=',')
+                headers = readfile.fieldnames
+                writefile = csv.DictWriter(writepath,fieldnames = headers,delimiter=',')
+                writefile.writeheader()
+                rowsToFilter = readfile
+                for (key,value) in MatchDict.items():
+                    rowsToFilter = filter(lambda row: (row[str(key)] == str(value)),rowsToFilter)
+                if OnlyLate:
+                    rowsToFilter = filter(lambda row: (row['Hour']>str(LateHour) or (row['Hour'] == str(LateHour) and row['Minute']>str(LateMinute))),rowsToFilter)
+                for row in rowsToFilter:
+                    writefile.writerow(row)
+
 
     def RepView(self,year,month,OnlyLate):
         pass
@@ -70,11 +106,12 @@ class Attendance():
                 headers = readfile.fieldnames
                 t = PrettyTable(list(headers[1:]))
                 print(f'This is an attendance report for ID {id}')
-                t.add_row(['Year','Month','Day','Hour','Minute'])
+                t.add_row(headers[1:])
                 for row in readfile:
                     if row['ID'] == str(id) and row['Year'] == str(year) and row['Month'] == str(month):
                         t.add_row([row['Year'],row['Month'],row['Day'],row['Hour'],row['Minute']])
                 print(t)
+
 
 
                     

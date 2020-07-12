@@ -137,7 +137,14 @@ def tRepID():
     #     print(f'Finished with an exception {Exc}')
     lst.RepID(id1,datetime.datetime.now().year,datetime.datetime.now().month)
     lst.RepIDView(id1,datetime.datetime.now().year,datetime.datetime.now().month)
-    #will be continued
+
+def tRep():
+    try:
+        lst.Rep(2020,7,True)
+    except Exception as Exc:
+        print(f'Rep finished with exception {Exc}')
+    else:
+        print(f'Rep succeeded')
 
 #running the unit tests
 
@@ -157,6 +164,7 @@ tdelFromXLSX(filepathXLSX)
 tCreateAttList()
 tWrite(id)
 tRepID()
+tRep()
 # for i1 in range(len(a.list)):
 #     print(a.list[i1].id)
 

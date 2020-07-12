@@ -43,38 +43,27 @@ class Attendance():
             MatchDict['Month']=month
             MatchDict['ID'] = id
             self.WriteToCSV(MatchDict,False)
-            # with open(pathID,'a',newline='') as IDrep:
-            #     with open(list_path,'r') as List:
-            #         readfile = csv.DictReader(List,delimiter=',')
-            #         headers = readfile.fieldnames
-            #         writefile = csv.DictWriter(IDrep,fieldnames = headers,delimiter=',')
-            #         writefile.writeheader()
-            #         for row in readfile:
-            #             if row['ID'] == str(id) and row['Year'] == str(year) and row['Month'] == str(month):
-            #                 writefile.writerow(row)
 
     def Rep(self,year,month,OnlyLate):
-        pathID = './'+str(year)+'_'+str(month)+'_report.csv'
-        pathIDlate='./'+str(year)+'_'+str(month)+'_late_report.csv'
-        list_path = self.CreateAttList()
-        if not a.IsInList(id,self.EList.list):
-            print('Employee is not in database!')
-            raise NotInDB('Employee not in database')
-        else:
-            pass
+        MatchDict = {}
+        MatchDict['Year']=year
+        MatchDict['Month']=month
+        self.WriteToCSV(MatchDict,OnlyLate)
+
     
     def WriteToCSV(self,MatchDict,OnlyLate):
         list_path = self.CreateAttList()
         path = './'
 
-        LateHour = 9
-        LateMinute = 30
+        LateHour = 17
+        LateMinute = 15
 
-        for Headers in MatchDict.keys():
-            path = path + str(Headers)
+        for Headers in MatchDict.values():
+            path = path + str(Headers) + '_'
         if OnlyLate:
             path = path + '_late'
         path = path + '_report.csv'
+        print(path)
         with open(path,'a',newline='') as writepath:
             with open(list_path,'r') as readpath:
                 readfile = csv.DictReader(readpath,delimiter=',')
@@ -85,7 +74,7 @@ class Attendance():
                 for (key,value) in MatchDict.items():
                     rowsToFilter = filter(lambda row: (row[str(key)] == str(value)),rowsToFilter)
                 if OnlyLate:
-                    rowsToFilter = filter(lambda row: (row['Hour']>str(LateHour) or (row['Hour'] == str(LateHour) and row['Minute']>str(LateMinute))),rowsToFilter)
+                    rowsToFilter = filter(lambda row: (int(row['Hour']) > LateHour or (int(row['Hour']) == LateHour and int(row['Minute']) > LateMinute)),rowsToFilter)
                 for row in rowsToFilter:
                     writefile.writerow(row)
 
